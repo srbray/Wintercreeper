@@ -61,7 +61,8 @@ fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data fra
 fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
 # Combine Indicator Values with Taxonomy
-tax.raw <- (read.delim("./DataFiles/WC.taxonomy.03.tab")) #taxonomy tab delimited
+tax.raw3 <- (read.delim("./DataFiles/WC.taxonomy.03.tab")) #taxonomy tab delimited
 include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
-tax<-tax.raw[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
-Scotts.iva.data <- merge(fidg, tax, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
+include<-include[order(include)]#put OTUs in numerical order
+tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
+Scotts.iva.data <- merge(fidg, tax2, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
