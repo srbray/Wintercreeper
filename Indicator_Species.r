@@ -61,10 +61,5 @@ fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data fra
 fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
 # Combine Indicator Values with Taxonomy
-tax.raw <- (read.delim("./DataFiles/WC.taxonomy.0.03"))
-# colsplit below not working. error: no applicable method for 'colsplit' applied to an object of class "data.frame"
-tax <- transform(tax.raw, Taxonomy=colsplit(tax.raw[,3],
-    split="\\;", names=c("Domain","Phylum","Class","Order","Family","Genus")))
-rownames(tax) <- tax[,1]
-rownames(Scotts.iva) <- gsub("Otu0", "Otu", rownames(heteros)) 
-Scotts.iva.data <- merge(Scotts.iva, tax, by = "row.names", all.x=T )
+tax.raw <- (read.delim("./DataFiles/WC.taxonomy.03.tab")) #taxonomy tab delimited
+Scotts.iva.data <- merge(fidg, tax.raw, by = "row.names", all.x=T )
