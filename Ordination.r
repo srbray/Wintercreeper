@@ -14,16 +14,14 @@
 
   # Set your directory
   WCdir<-getwd()
-  setwd("C:/Users/sbray/Dropbox/Sabbatical/2014-Bray_WC_Analysis")
+  setwd("C:/Users/sbray/GitHub/Wintercreeper")
   
-#wc.bysite <- function(shared = " ", design = " ", plot.title = "PCoA"){
-
-  source("./R_files/DiversityFunctions.r")  
+  source("./DiversityFunctions.r")  
   require(vegan)  
   require(BiodiversityR)
 
-  WC <- read.otu(shared ="./WC.final.shared", "0.03")
-  design <- read.delim(file="./WC.design", header=T, row.names=1)
+  WC <- read.otu(shared ="./Data/WC.final.shared", "0.03")
+  design <- read.delim(file="./Data/WC.design", header=T, row.names=1)
   Arbdesign<-design[1:10,]
   Scottdesign<-design[11:20,]
 

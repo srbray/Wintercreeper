@@ -14,16 +14,16 @@
 
 # Set your directory
 WCdir<-getwd()
-setwd("C:/Users/sbray/Dropbox/Sabbatical/2014-Bray_WC_Analysis")
+setwd("C:/Users/sbray/GitHub/Wintercreeper")
 
-source("./R_files/Diversity_Functions/DiversityFunctions.r")  
+source("./DiversityFunctions.r")  
 require(vegan)  
 require(BiodiversityR)
 require(labdsv)
 require(reshape)
 
-WC <- read.otu(shared ="./WC.final.shared", "0.03")
-design <- read.delim(file="./WC.design", header=T, row.names=1)
+WC <- read.otu(shared ="./Data/WC.final.shared", "0.03")
+design <- read.delim(file="./Data/WC.design", header=T, row.names=1)
 Arbdesign<-design[1:10,]
 Scottdesign<-design[11:20,]
 
@@ -61,8 +61,9 @@ fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data fra
 fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
 # Combine Indicator Values with Taxonomy
-tax.raw3 <- (read.delim("./DataFiles/WC.taxonomy.03.tab")) #taxonomy tab delimited
-include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
-include<-include[order(include)]#put OTUs in numerical order
-tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
-Scotts.iva.data <- merge(fidg, tax2, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
+tax.raw <- (read.delim("./Data/WC.taxonomy.03.tab")) #domain, phyla, order, etc. already own columns
+#include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
+#include<-include[order(include)]#put OTUs in numerical order
+#tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
+Scotts.iva.data <- merge(fidg, tax.raw, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
+Scotts.iva.data <- merge(indval, tax.raw, by.x = "row.names", by.y="row.names")
