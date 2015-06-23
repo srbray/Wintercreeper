@@ -68,5 +68,4 @@ tax.raw <- read.tax(taxonomy = "./Data/WC.tax.03") #domain, phyla, order, etc. a
 #include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
 #include<-include[order(include)]#put OTUs in numerical order
 #tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
-Scotts.iva.data <- merge(fidg, tax.raw, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
-Scotts.iva.data <- merge(indval, tax.raw, by.x = "row.names", by.y="row.names")
+Scotts.iva.data <- merge(fidg, tax.raw, by.x = "row.names", by.y = "OTU", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
