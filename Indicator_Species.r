@@ -17,7 +17,7 @@
 
 # Set your directory
 WCdir<-getwd()
-setwd("~/GitHub/Wintercreeper")
+setwd("C:/Users/sbray/GitHub/Wintercreeper")
 
 source("./bin/MothurTools.R")
 require(vegan)
@@ -64,7 +64,7 @@ for(i in 1:nrow(Scotts)){
   fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
 # Combine Indicator Values with Taxonomy
-tax.raw <- (read.delim("./Data/WC.taxonomy.03.tab")) #domain, phyla, order, etc. already own columns
+tax.raw <- read.tax(taxonomy = "./Data/WC.tax.03") #domain, phyla, order, etc. already own columns
 #include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
 #include<-include[order(include)]#put OTUs in numerical order
 #tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs

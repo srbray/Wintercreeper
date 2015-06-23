@@ -80,39 +80,40 @@
   Scottsresponders_a2<-Scottscor[Scottscor[,2]>=0.7|Scottscor[,2]<=-0.7,] # subset PCoA axis  2based on r > |0.7|;
 
   # Creating Vectors for soil variables
-  soilarb<-read.csv("./DataFiles/soilarb.csv", header=T, row.names=1)
+  soilarb<-read.csv("./Data/soilarb.csv", header=T, row.names=1)
   Arbsoil<-envfit(Arbpcoa, soilarb)
 
-  soil<-read.csv("./DataFiles/soil.csv", header=T, row.names=1)
+  soil<-read.csv("./Data/soil.csv", header=T, row.names=1)
   Scottssoil<- envfit(Scottspcoa, soil, na.rm=T)
 
 
 
   # Percent Variance Explained Using PCoA (Axis 1,2,3)- Arboretum
-  explainvar1 <- round(Arbpcoa$eig[1]/sum(Arbpcoa$eig)*100,2) 
-  explainvar2 <- round(Arbpcoa$eig[2]/sum(Arbpcoa$eig)*100,2)
-  explainvar3 <- round(Arbpcoa$eig[3]/sum(Arbpcoa$eig)*100,2)
+  explainvar1A <- round(Arbpcoa$eig[1]/sum(Arbpcoa$eig)*100,2) 
+  explainvar2A <- round(Arbpcoa$eig[2]/sum(Arbpcoa$eig)*100,2)
+  explainvar3A <- round(Arbpcoa$eig[3]/sum(Arbpcoa$eig)*100,2)
 
   # Percent Variance Explained Using PCoA (Axis 1,2,3)- Scotts Grove
-  explainvar1 <- round(Scottspcoa$eig[1]/sum(Scottspcoa$eig)*100,2) 
-  explainvar2 <- round(Scottspcoa$eig[2]/sum(Scottspcoa$eig)*100,2)
-  explainvar3 <- round(Scottspcoa$eig[3]/sum(Scottspcoa$eig)*100,2)
+  explainvar1S <- round(Scottspcoa$eig[1]/sum(Scottspcoa$eig)*100,2) 
+  explainvar2S <- round(Scottspcoa$eig[2]/sum(Scottspcoa$eig)*100,2)
+  explainvar3S <- round(Scottspcoa$eig[3]/sum(Scottspcoa$eig)*100,2)
   
   pcoap <- merge(as.data.frame(Arbpcoa$points),Arbdesign,by=0,all.x=T)[,-1]
   rownames(pcoap) <- rownames(Arbpcoa$points)
 
-  pcoap <- merge(as.data.frame(Scottspcoa$points),Scottdesign,by=0,all.x=T)[,-1]
+  pcoapS <- merge(as.data.frame(Scottspcoa$points),Scottdesign,by=0,all.x=T)[,-1]
   rownames(pcoap) <- rownames(Scottspcoa$points)
   
   # Plot Parameters Arb
+pdf("./Plots/ArbPCoA.pdf")
 par(mfrow=c(1,1), mar=c(5,5,1,1)) 
 layout(rbind(1, 2), height=c(7, 1)) 
 y.dim <- c(min(pcoap$V2)+min(pcoap$V2)*0.2,max(pcoap$V2)+max(pcoap$V2)*0.2)
-x.dim <- c(min(pcoap$V1)+min(pcoap$V1)*0.2,max(pcoap$V1)+max(pcoap$V1)*2.2)
+x.dim <- c(min(pcoap$V1)+min(pcoap$V1)*1.2,max(pcoap$V1)+max(pcoap$V1)*0.2)
 
 # Initiate Plot Arb
-plot(pcoap$V1, pcoap$V2, xlab=paste("PCoA Axis 1 (",explainvar1, "%)", sep="")
-     , ylab=paste("PCoA Axis 2 (",explainvar2, "%)", sep=""), 
+plot(pcoap$V1, pcoap$V2, xlab=paste("PCoA Axis 1 (",explainvar1A, "%)", sep="")
+     , ylab=paste("PCoA Axis 2 (",explainvar2A, "%)", sep=""), 
      xlim=x.dim,ylim= y.dim, pch=16, cex=2.0, type="n",xaxt="n",
      yaxt="n", cex.lab=1.5, cex.axis=1.2)  
 axis(side=1, las=1)   
@@ -122,25 +123,25 @@ abline(v=0, lty="dotted")
 
 invasion.color <- rep(NA, dim(pcoap)[1])
 for (i in 1:length(invasion.color)){
-  if (pcoap$invasion[i] == "Invaded") {invasion.color[i] = "purple"}
+  if (pcoap$invasion[i] == "Invaded") {invasion.color[i] = "black"}
   else {invasion.color[i] = "white"}
 } 
 points(pcoap$V1, pcoap$V2,pch=22, cex=2.0, col="black", bg=invasion.color, lwd=2)   
 text(pcoap$V1, pcoap$V2, labels=pcoap$sample.1, pos=4, offset=0.5, cex=0.7)
-plot(Scottssoil, p.max=0.1, cex = 0.75)
-legend(-0.5,0.35,c("Invaded","Native"), pch=c(22,22),pt.lwd=2, col="black", pt.bg=c("purple", "white"), bty='y')
-
+plot(Arbsoil, p.max=0.1, cex = 0.75)
+dev.off()
 
 
 # Plot Parameters: Scotts Grove
+pdf("./Plots/ScottPCoA.pdf")
 par(mfrow=c(1,1), mar=c(5,5,1,1)) 
 layout(rbind(1, 2), height=c(7, 1)) 
-y.dim <- c(min(pcoap$V2)+min(pcoap$V2)*0.2,max(pcoap$V2)+max(pcoap$V2)*0.2)
-x.dim <- c(min(pcoap$V1)+min(pcoap$V1)*0.2,max(pcoap$V1)+max(pcoap$V1)*2.2)
+y.dim <- c(min(pcoapS$V2)+min(pcoapS$V2)*0.2,max(pcoapS$V2)+max(pcoapS$V2)*0.2)
+x.dim <- c(min(pcoapS$V1)+min(pcoapS$V1)*0.2,max(pcoapS$V1)+max(pcoapS$V1)*2.2)
 
 # Initiate Plot
-plot(pcoap$V1, pcoap$V2, xlab=paste("PCoA Axis 1 (",explainvar1, "%)", sep="")
-     , ylab=paste("PCoA Axis 2 (",explainvar2, "%)", sep=""), 
+plot(pcoapS$V1, pcoapS$V2, xlab=paste("PCoA Axis 1 (",explainvar1S, "%)", sep="")
+     , ylab=paste("PCoA Axis 2 (",explainvar2S, "%)", sep=""), 
      xlim=x.dim,ylim= y.dim, pch=16, cex=2.0, type="n",xaxt="n",
      yaxt="n", cex.lab=1.5, cex.axis=1.2)  
 axis(side=1, las=1)   
@@ -148,14 +149,16 @@ axis(side=2, las=1)
 abline(h=0, lty="dotted")  
 abline(v=0, lty="dotted")
 
-invasion.color <- rep(NA, dim(pcoap)[1])
+invasion.color <- rep(NA, dim(pcoapS)[1])
 for (i in 1:length(invasion.color)){
-  if (pcoap$invasion[i] == "Invaded") {invasion.color[i] = "purple"}
+  if (pcoapS$invasion[i] == "Invaded") {invasion.color[i] = "black"}
   else {invasion.color[i] = "white"}
 } 
-points(pcoap$V1, pcoap$V2,pch=22, cex=2.0, col="black", bg=invasion.color, lwd=2)   
-text(pcoap$V1, pcoap$V2, labels=pcoap$sample.1, pos=4, offset=0.5, cex=0.7)
+points(pcoapS$V1, pcoapS$V2,pch=22, cex=2.0, col="black", bg=invasion.color, lwd=2)   
+text(pcoapS$V1, pcoapS$V2, labels=pcoapS$sample.1, pos=4, offset=0.5, cex=0.7)
 plot(Scottssoil, p.max=0.1, cex = 0.75)
+dev.off()
+
 #box(lwd=2)
 #par(mar=c(0, 3, 0, 0)) #marios
 #par(mar=c(4,4,4,4))
