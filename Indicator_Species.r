@@ -4,61 +4,64 @@
 #                                                                              #
 ################################################################################
 #                                                                              #                                                                          #
-#	Written by: Sarah Bray
+#	Written by: Sarah Bray                                                       #
+#                                                                              #
+# First draft: 17 June 2015                                                    #
+#                                                                              #
+#	Updated: 22 June 2015 (M.Muscarella)                                         #
 #
-# First draft: 17 June 2015
-#
-#	Updated: 
+# Recent Changes:
+#   1.
 #                                                                              #
 ################################################################################
 
 # Set your directory
 WCdir<-getwd()
-setwd("C:/Users/sbray/GitHub/Wintercreeper")
+setwd("~/GitHub/Wintercreeper")
 
-source("./DiversityFunctions.r")  
-require(vegan)  
+source("./bin/MothurTools.R")
+require(vegan)
 require(BiodiversityR)
 require(labdsv)
 require(reshape)
 
-WC <- read.otu(shared ="./Data/WC.final.shared", "0.03")
-design <- read.delim(file="./Data/WC.design", header=T, row.names=1)
-Arbdesign<-design[1:10,]
-Scottdesign<-design[11:20,]
+WC          <- read.otu(shared = "./data/WC.final.shared", "0.03")
+design      <- read.delim(file = "./data/WC.design", header = T, row.names = 1)
+Arbdesign   <- design[1:10, ]
+Scottdesign <- design[11:20, ]
 
 # Make separate matrices for Arboretum and Scotts Grove
-Arb<- WC[1:10,]
-Scotts<- WC[11:20,]
+Arb    <- as.matrix(WC[1:10, ])
+Scotts <- as.matrix(WC[11:20, ])
 
 # Remove Zero Sum OTUs
-Arb <- Arb[,!(colSums(abs(Arb)) ==0)]
-Scotts<-Scotts[,!(colSums(abs(Scotts))==0)]
+Arb    <- Arb[ ,!(colSums(abs(Arb)) == 0)]
+Scotts <- Scotts[ ,!(colSums(abs(Scotts))== 0)]
 
 # Calculate Presense Absence
-dataPA <- (WC_data > 0)*1 
+dataPA <- (WC_data > 0)*1
 
 # Calculating Relative Abundance
 ArbREL <- Arb
 for(i in 1:nrow(Arb)){
   ArbREL[i,] = Arb[i,]/sum(Arb[i,])
-}  
+}
 
 ScottsREL <- Scotts
 for(i in 1:nrow(Scotts)){
   ScottsREL[,i] = Scotts[,i]/sum(Scotts[,i])
-} 
+}
 
 # Species Indicator Values, see Legendre and Legendre 2012, Numerical Ecology
 # Code modified from p-meso.indval.r by Mario Muscarella
 # Groups: Invaded = 1, Native = 2
-Scotts.iva <- indval(ScottsREL, design$invasion, numitr=1000)
-gr <- Scotts.iva$maxcls[Scotts.iva$pval <= 0.05] #mxcls = the class each species has maximum value for
-iv <- Scotts.iva$indcls[Scotts.iva$pval <= 0.05] #indcls = indicator value for each species to its maximum class 
-pv <- Scotts.iva$pval[Scotts.iva$pval   <= 0.05] #pval = p-value 
-fr <- apply(ScottsREL>0, 2, sum)[Scotts.iva$pval <= 0.05] #fr is # of species that are indicators? 
-fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data frame of significant outputs of indval 
-fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
+  Scotts.iva <- indval(ScottsREL, as.numeric(design$invasion), numitr=1000)
+  gr <- Scotts.iva$maxcls[Scotts.iva$pval <= 0.05] #mxcls = the class each species has maximum value for
+  iv <- Scotts.iva$indcls[Scotts.iva$pval <= 0.05] #indcls = indicator value for each species to its maximum class
+  pv <- Scotts.iva$pval[Scotts.iva$pval   <= 0.05] #pval = p-value
+  fr <- apply(ScottsREL>0, 2, sum)[Scotts.iva$pval <= 0.05] #fr is # of species that are indicators?
+  fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data frame of significant outputs of indval
+  fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
 # Combine Indicator Values with Taxonomy
 tax.raw <- (read.delim("./Data/WC.taxonomy.03.tab")) #domain, phyla, order, etc. already own columns
