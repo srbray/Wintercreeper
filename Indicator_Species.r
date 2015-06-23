@@ -63,9 +63,14 @@ for(i in 1:nrow(Scotts)){
   fidg <- data.frame(group=gr, indval=iv, pvalue=pv, freq=fr) #making new data frame of significant outputs of indval
   fidg <- fidg[order(fidg$group, -fidg$indval), ] #ordering data frame by category
 
+  row.names(fidg) <- paste("Otu", gsub("Otu0", "", row.names(fidg)), sep="")
+
 # Combine Indicator Values with Taxonomy
-tax.raw <- read.tax(taxonomy = "./Data/WC.tax.03") #domain, phyla, order, etc. already own columns
+tax.raw <- read.tax(taxonomy = "./data/WC.tax.03") #domain, phyla, order, etc. already own columns
+tax.otu <- tax.raw[,3:7]
+row.names(tax.otu) <- tax.raw$OTU
+
 #include<-row.names(fidg) #creates vector of OTUs from significant species indicator values
 #include<-include[order(include)]#put OTUs in numerical order
 #tax3<-tax.raw3[include,] #attemping to subset only significant INDVal OTUs from taxonomy file; yeilds matrix of correct dimensions, but all NAs
-Scotts.iva.data <- merge(fidg, tax.raw, by.x = "row.names", by.y = "OTU", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
+Scotts.iva.data <- merge(fidg, tax.otu, by = "row.names", all.x=T ) #resulting dataframe has NAs in columns coming from taxonomy file
